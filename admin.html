@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Blog Admin — Mor Sofer</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <!-- Quill rich text editor -->
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #181818;
+      --border: #1e1e1e;
+      --accent: #7c3aed;
+      --accent-hover: #6d28d9;
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.45);
+      --dim: rgba(255,255,255,0.2);
+      --danger: #dc2626;
+      --success: #16a34a;
+      --radius: 10px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Login ── */
+    #login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .login-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-box h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .login-box p {
+      color: var(--muted);
+      margin-bottom: 32px;
+      font-size: 13px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    .field { margin-bottom: 20px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover:not(:disabled) { opacity: 0.85; }
+
+    .btn-full { width: 100%; justify-content: center; }
+
+    /* ── App shell ── */
+    #app { display: none; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+    }
+
+    .topbar-logo span { color: var(--accent); }
+
+    .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+    main { max-width: 960px; margin: 0 auto; padding: 40px 24px; }
+
+    /* ── Post list ── */
+    #post-list-view h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .post-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .post-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .post-table td {
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .post-table tr:hover td { background: var(--surface2); }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-published { background: rgba(22,163,74,0.15); color: #4ade80; }
+    .badge-draft { background: rgba(255,255,255,0.06); color: var(--muted); }
+
+    .row-actions { display: flex; gap: 8px; }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+      color: var(--muted);
+    }
+
+    .empty-state p { margin-bottom: 20px; font-size: 16px; }
+
+    /* ── Editor ── */
+    #editor-view { display: none; }
+
+    #editor-view h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      margin-bottom: 28px;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .editor-main { display: flex; flex-direction: column; gap: 18px; }
+
+    .editor-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: sticky;
+      top: 80px;
+    }
+
+    .editor-sidebar h3 {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    /* Quill overrides */
+    .ql-toolbar.ql-snow {
+      background: var(--surface2);
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .ql-container.ql-snow {
+      background: var(--surface2);
+      border: 1px solid var(--border) !important;
+      border-top: none !important;
+      border-radius: 0 0 var(--radius) var(--radius);
+      min-height: 360px;
+    }
+
+    .ql-editor { color: var(--text); min-height: 360px; font-size: 15px; line-height: 1.7; }
+    .ql-editor.ql-blank::before { color: var(--muted); }
+    .ql-snow .ql-stroke { stroke: var(--muted); }
+    .ql-snow .ql-fill { fill: var(--muted); }
+    .ql-snow .ql-picker { color: var(--muted); }
+    .ql-snow.ql-toolbar button:hover .ql-stroke,
+    .ql-snow .ql-toolbar button:hover .ql-stroke { stroke: var(--text); }
+
+    /* Status toggle */
+    .status-toggle {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .status-toggle button {
+      flex: 1;
+      padding: 8px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .status-toggle button.active-draft { background: var(--surface2); color: var(--text); }
+    .status-toggle button.active-published { background: rgba(22,163,74,0.2); color: #4ade80; }
+
+    /* Image upload */
+    .upload-area {
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .upload-area:hover { border-color: var(--accent); }
+
+    .upload-area input { display: none; }
+
+    .cover-preview {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      display: none;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 20px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+    }
+
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.success { background: var(--success); color: #fff; }
+    #toast.error { background: var(--danger); color: #fff; }
+
+    /* Error */
+    .error-msg {
+      color: #f87171;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 700px) {
+      .editor-grid { grid-template-columns: 1fr; }
+      .topbar { padding: 14px 16px; }
+      main { padding: 24px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Login Screen ── -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>Mor Sofer.</h1>
+    <p>Blog admin — sign in to continue.</p>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="••••••••••••" autocomplete="current-password" />
+    </div>
+    <p class="error-msg" id="login-error" style="display:none;"></p>
+    <button class="btn btn-primary btn-full" id="login-btn" onclick="handleLogin()">Sign in</button>
+  </div>
+</div>
+
+<!-- ── App ── -->
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-logo">Mor Sofer. <span>/ Blog</span></div>
+    <div class="topbar-actions">
+      <a href="index.html" class="btn btn-ghost" target="_blank">View site</a>
+      <button class="btn btn-ghost" onclick="handleLogout()">Sign out</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Post list -->
+    <div id="post-list-view">
+      <div class="list-header">
+        <h2>Posts</h2>
+        <button class="btn btn-primary" onclick="openEditor(null)">+ New post</button>
+      </div>
+      <div id="posts-container">
+        <p style="color:var(--muted);">Loading...</p>
+      </div>
+    </div>
+
+    <!-- Editor -->
+    <div id="editor-view">
+      <h2 id="editor-heading">New post</h2>
+
+      <div class="editor-grid">
+        <div class="editor-main">
+          <div class="field">
+            <label>Title</label>
+            <input type="text" id="f-title" placeholder="Post title" oninput="autoSlug()" />
+          </div>
+          <div class="field">
+            <label>Slug (URL)</label>
+            <input type="text" id="f-slug" placeholder="post-url-slug" />
+          </div>
+          <div class="field">
+            <label>Excerpt</label>
+            <textarea id="f-excerpt" rows="3" placeholder="Short preview shown on the homepage..."></textarea>
+          </div>
+          <div class="field">
+            <label>Content</label>
+            <div id="quill-editor"></div>
+          </div>
+        </div>
+
+        <div class="editor-sidebar">
+          <!-- Status -->
+          <div>
+            <h3>Status</h3>
+            <div class="status-toggle">
+              <button id="btn-draft" onclick="setStatus('draft')">Draft</button>
+              <button id="btn-published" onclick="setStatus('published')">Published</button>
+            </div>
+          </div>
+
+          <!-- Publish date -->
+          <div>
+            <h3>Publish date</h3>
+            <input type="datetime-local" id="f-published-at" />
+          </div>
+
+          <!-- Tags -->
+          <div>
+            <h3>Tags</h3>
+            <input type="text" id="f-tags" placeholder="growth, marketing, brand" />
+            <p style="color:var(--muted);font-size:11px;margin-top:6px;">Comma separated</p>
+          </div>
+
+          <!-- Cover image -->
+          <div>
+            <h3>Cover image</h3>
+            <img id="cover-preview" class="cover-preview" src="" alt="Cover preview" />
+            <div class="upload-area" onclick="document.getElementById('cover-file').click()">
+              <input type="file" id="cover-file" accept="image/*" onchange="uploadCover(event)" />
+              <p style="color:var(--muted);font-size:12px;" id="upload-label">Click to upload image</p>
+            </div>
+            <input type="text" id="f-cover-url" placeholder="Or paste image URL" style="margin-top:8px;" oninput="previewCoverUrl()" />
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex;flex-direction:column;gap:10px;padding-top:8px;border-top:1px solid var(--border);">
+            <button class="btn btn-primary" onclick="savePost()">Save post</button>
+            <button class="btn btn-ghost" onclick="closeEditor()">← Back to list</button>
+            <button class="btn btn-danger" id="delete-btn" onclick="deletePost()" style="display:none;">Delete post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const SUPABASE_URL = 'https://jfgoayjdeyfbxlfihqwa.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_jVvidoHImBqOwRhwfMfpMQ_LybvvqjK';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let quill;
+  let currentPostId = null;
+  let currentStatus = 'draft';
+
+  // ── Init ──
+  window.addEventListener('DOMContentLoaded', async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) showApp();
+
+    quill = new Quill('#quill-editor', {
+      theme: 'snow',
+      placeholder: 'Write your post here...',
+      modules: {
+        toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image'],
+          ['clean']
+        ]
+      }
+    });
+  });
+
+  // ── Auth ──
+  async function handleLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const btn = document.getElementById('login-btn');
+    const err = document.getElementById('login-error');
+
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+    err.style.display = 'none';
+
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      err.textContent = error.message;
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Sign in';
+    } else {
+      showApp();
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+      handleLogin();
+    }
+  });
+
+  async function handleLogout() {
+    await sb.auth.signOut();
+    location.reload();
+  }
+
+  function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadPosts();
+  }
+
+  // ── Post list ──
+  async function loadPosts() {
+    const { data: posts, error } = await sb
+      .from('posts')
+      .select('id, title, slug, status, published_at')
+      .order('created_at', { ascending: false });
+
+    const container = document.getElementById('posts-container');
+
+    if (error) {
+      container.innerHTML = `<p style="color:#f87171;">Error loading posts: ${error.message}</p>`;
+      return;
+    }
+
+    if (!posts || posts.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <p>No posts yet.</p>
+          <button class="btn btn-primary" onclick="openEditor(null)">Write your first post</button>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <table class="post-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Published</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${posts.map(p => `
+            <tr>
+              <td>${p.title || '(untitled)'}</td>
+              <td><span class="badge badge-${p.status}">${p.status}</span></td>
+              <td style="color:var(--muted);">${p.published_at ? new Date(p.published_at).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '—'}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="btn btn-ghost" onclick="openEditor('${p.id}')">Edit</button>
+                  <a href="blog/post.html?slug=${p.slug}" target="_blank" class="btn btn-ghost">Preview</a>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  // ── Editor ──
+  async function openEditor(postId) {
+    currentPostId = postId;
+    document.getElementById('post-list-view').style.display = 'none';
+    document.getElementById('editor-view').style.display = 'block';
+
+    // Reset
+    document.getElementById('f-title').value = '';
+    document.getElementById('f-slug').value = '';
+    document.getElementById('f-excerpt').value = '';
+    document.getElementById('f-tags').value = '';
+    document.getElementById('f-cover-url').value = '';
+    document.getElementById('f-published-at').value = '';
+    document.getElementById('cover-preview').style.display = 'none';
+    document.getElementById('upload-label').textContent = 'Click to upload image';
+    quill.setContents([]);
+    setStatus('draft');
+
+    if (postId) {
+      document.getElementById('editor-heading').textContent = 'Edit post';
+      document.getElementById('delete-btn').style.display = 'block';
+
+      const { data: post } = await sb.from('posts').select('*').eq('id', postId).single();
+      if (post) {
+        document.getElementById('f-title').value = post.title || '';
+        document.getElementById('f-slug').value = post.slug || '';
+        document.getElementById('f-excerpt').value = post.excerpt || '';
+        document.getElementById('f-tags').value = post.tags ? post.tags.join(', ') : '';
+        document.getElementById('f-cover-url').value = post.cover_image || '';
+        if (post.published_at) {
+          document.getElementById('f-published-at').value = new Date(post.published_at).toISOString().slice(0,16);
+        }
+        if (post.cover_image) {
+          const img = document.getElementById('cover-preview');
+          img.src = post.cover_image;
+          img.style.display = 'block';
+        }
+        setStatus(post.status || 'draft');
+        quill.clipboard.dangerouslyPasteHTML(post.content || '');
+      }
+    } else {
+      document.getElementById('editor-heading').textContent = 'New post';
+      document.getElementById('delete-btn').style.display = 'none';
+    }
+  }
+
+  function closeEditor() {
+    document.getElementById('editor-view').style.display = 'none';
+    document.getElementById('post-list-view').style.display = 'block';
+    loadPosts();
+  }
+
+  function setStatus(s) {
+    currentStatus = s;
+    document.getElementById('btn-draft').className = s === 'draft' ? 'active-draft' : '';
+    document.getElementById('btn-published').className = s === 'published' ? 'active-published' : '';
+  }
+
+  function autoSlug() {
+    const title = document.getElementById('f-title').value;
+    const slug = title.toLowerCase().trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+    document.getElementById('f-slug').value = slug;
+  }
+
+  async function savePost() {
+    const title = document.getElementById('f-title').value.trim();
+    const slug = document.getElementById('f-slug').value.trim();
+    const excerpt = document.getElementById('f-excerpt').value.trim();
+    const content = quill.root.innerHTML;
+    const cover_image = document.getElementById('f-cover-url').value.trim();
+    const tagsRaw = document.getElementById('f-tags').value.trim();
+    const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+    const publishedAtRaw = document.getElementById('f-published-at').value;
+    const published_at = publishedAtRaw ? new Date(publishedAtRaw).toISOString() : null;
+
+    if (!title) { showToast('Title is required.', 'error'); return; }
+    if (!slug) { showToast('Slug is required.', 'error'); return; }
+
+    const payload = { title, slug, excerpt, content, cover_image, tags, status: currentStatus, published_at };
+
+    let error;
+    if (currentPostId) {
+      ({ error } = await sb.from('posts').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', currentPostId));
+    } else {
+      ({ error } = await sb.from('posts').insert(payload));
+    }
+
+    if (error) {
+      showToast('Error: ' + error.message, 'error');
+    } else {
+      showToast('Post saved.', 'success');
+      if (!currentPostId) closeEditor();
+    }
+  }
+
+  async function deletePost() {
+    if (!currentPostId) return;
+    if (!confirm('Delete this post? This cannot be undone.')) return;
+    const { error } = await sb.from('posts').delete().eq('id', currentPostId);
+    if (error) {
+      showToast('Error: ' + error.message, 'error');
+    } else {
+      showToast('Post deleted.', 'success');
+      closeEditor();
+    }
+  }
+
+  // ── Image upload ──
+  async function uploadCover(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const label = document.getElementById('upload-label');
+    label.textContent = 'Uploading...';
+
+    const ext = file.name.split('.').pop();
+    const filename = `cover-${Date.now()}.${ext}`;
+
+    const { data, error } = await sb.storage.from('blog-images').upload(filename, file, { upsert: true });
+
+    if (error) {
+      showToast('Upload failed: ' + error.message, 'error');
+      label.textContent = 'Click to upload image';
+      return;
+    }
+
+    const { data: { publicUrl } } = sb.storage.from('blog-images').getPublicUrl(filename);
+    document.getElementById('f-cover-url').value = publicUrl;
+
+    const img = document.getElementById('cover-preview');
+    img.src = publicUrl;
+    img.style.display = 'block';
+    label.textContent = 'Change image';
+
+    showToast('Image uploaded.', 'success');
+  }
+
+  function previewCoverUrl() {
+    const url = document.getElementById('f-cover-url').value.trim();
+    const img = document.getElementById('cover-preview');
+    if (url) {
+      img.src = url;
+      img.style.display = 'block';
+    } else {
+      img.style.display = 'none';
+    }
+  }
+
+  // ── Toast ──
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `show ${type}`;
+    setTimeout(() => { t.className = ''; }, 3000);
+  }
+</script>
+</body>
+</html>
