@@ -471,6 +471,53 @@
     }
 
     /* ── Work ── */
+    .logos-marquee-wrap {
+      margin-top: 56px;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+    }
+
+    .logos-track {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+    }
+
+    .logos-track:hover { animation-play-state: paused; }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .logo-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 48px;
+      height: 64px;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+
+    .logo-item img {
+      height: 28px;
+      width: auto;
+      max-width: 120px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      opacity: 0.45;
+      transition: opacity 0.3s ease, filter 0.3s ease;
+    }
+
+    .logo-item:hover img {
+      opacity: 0.9;
+      filter: brightness(0) invert(1);
+    }
+
     #work .work-inner {
       margin-top: 64px;
       border: 1px solid #1e1e1e;
@@ -482,6 +529,7 @@
       text-align: center;
       gap: 20px;
       background: #111111;
+      display: none;
     }
 
     #work .work-inner p {
@@ -1084,10 +1132,26 @@
   <section id="work">
     <p class="section-label reveal">Work</p>
     <h2 class="section-heading reveal">Brands I've<br>helped grow.</h2>
-    <div class="work-inner reveal">
-      <div class="count">10+</div>
-      <p>Brands, startups & scale-ups across Europe and beyond.</p>
-      <p style="margin-top:8px;font-size:0.75rem;color:rgba(255,255,255,0.18);">Full case studies coming soon.</p>
+
+    <div class="logos-marquee-wrap reveal">
+      <div class="logos-track">
+        <!-- Set 1 -->
+        <div class="logo-item"><img src="brand_assets/logos/Apron.svg" alt="Apron" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/Future-Doc.svg" alt="Future Doc" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/TradeStars-4.svg" alt="TradeStars" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/Marketeam.ai_.svg" alt="Marketeam.ai" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/Fielderz.svg" alt="Fielderz" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/Publicis.svg" alt="Publicis" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/HMC.svg" alt="HMC" /></div>
+        <!-- Set 2 — duplicate for seamless loop -->
+        <div class="logo-item"><img src="brand_assets/logos/Apron.svg" alt="Apron" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/Future-Doc.svg" alt="Future Doc" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/TradeStars-4.svg" alt="TradeStars" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/Marketeam.ai_.svg" alt="Marketeam.ai" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/Fielderz.svg" alt="Fielderz" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/Publicis.svg" alt="Publicis" /></div>
+        <div class="logo-item"><img src="brand_assets/logos/HMC.svg" alt="HMC" /></div>
+      </div>
     </div>
   </section>
 
