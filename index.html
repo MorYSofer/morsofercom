@@ -190,22 +190,42 @@
 
     .nav-links {
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
     }
 
     .nav-links a {
       font-family: 'Inter', sans-serif;
-      font-size: 0.8rem;
-      font-weight: 300;
-      color: rgba(255,255,255,0.7);
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.6);
       text-decoration: none;
-      letter-spacing: 0.05em;
-      transition: color 0.2s ease;
+      letter-spacing: 0.04em;
+      padding: 8px 14px;
+      border-radius: 8px;
+      position: relative;
+      transition: color 0.2s ease, background 0.2s ease;
     }
 
-    .nav-links a:hover { color: #ffffff; }
+    .nav-links a:hover {
+      color: #ffffff;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .nav-links a:active { background: rgba(255,255,255,0.1); }
+
+    .nav-links a[style*="color:#a855f7"] {
+      color: #a855f7 !important;
+      background: rgba(168,85,247,0.08);
+      border: 1px solid rgba(168,85,247,0.2);
+    }
+
+    .nav-links a[style*="color:#a855f7"]:hover {
+      background: rgba(168,85,247,0.15);
+      border-color: rgba(168,85,247,0.4);
+      color: #c084fc !important;
+    }
 
     .nav-email-btn {
       width: 40px;
@@ -774,6 +794,8 @@
     /* ── Responsive ── */
     @media (max-width: 768px) {
       nav { padding: 20px 24px; }
+      .nav-links a:not([href="#book"]) { display: none; }
+      .nav-links a[href="#book"] { padding: 7px 12px; font-size: 0.8rem; }
 
       /* Hero — centered, personal feel */
       #hero {
@@ -829,12 +851,6 @@
   <nav id="nav">
     <div id="nav-blur" aria-hidden="true"></div>
     <a href="#" class="nav-logo">Mor Sofer.</a>
-    <a href="mailto:hello@morsofer.com" class="nav-email-btn" aria-label="Email Mor">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="4" width="20" height="16" rx="2"/>
-        <path d="M2 7l10 7 10-7"/>
-      </svg>
-    </a>
     <div class="nav-links">
       <a href="#work">Work</a>
       <a href="#blog">Blog</a>
@@ -842,6 +858,12 @@
       <a href="#about">About</a>
       <a href="#book" style="color:#a855f7;">Book</a>
     </div>
+    <a href="mailto:hello@morsofer.com" class="nav-email-btn" aria-label="Email Mor">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2"/>
+        <path d="M2 7l10 7 10-7"/>
+      </svg>
+    </a>
   </nav>
 
   <!-- ══ HERO ══ -->
