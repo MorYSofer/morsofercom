@@ -467,6 +467,7 @@
               <p style="color:var(--muted);font-size:12px;" id="upload-label">Click to upload image</p>
             </div>
             <input type="text" id="f-cover-url" placeholder="Or paste image URL" style="margin-top:8px;" oninput="previewCoverUrl()" />
+            <button id="remove-cover-btn" onclick="removeCover()" class="btn btn-ghost" style="display:none;width:100%;justify-content:center;margin-top:8px;font-size:12px;">Remove cover image</button>
           </div>
 
           <!-- Actions -->
@@ -640,6 +641,7 @@
           const img = document.getElementById('cover-preview');
           img.src = post.cover_image;
           img.style.display = 'block';
+          document.getElementById('remove-cover-btn').style.display = 'flex';
         }
         setStatus(post.status || 'draft');
         quill.clipboard.dangerouslyPasteHTML(post.content || '');
@@ -740,6 +742,7 @@
     img.src = publicUrl;
     img.style.display = 'block';
     label.textContent = 'Change image';
+    document.getElementById('remove-cover-btn').style.display = 'flex';
 
     showToast('Image uploaded.', 'success');
   }
@@ -747,12 +750,23 @@
   function previewCoverUrl() {
     const url = document.getElementById('f-cover-url').value.trim();
     const img = document.getElementById('cover-preview');
+    const removeBtn = document.getElementById('remove-cover-btn');
     if (url) {
       img.src = url;
       img.style.display = 'block';
+      removeBtn.style.display = 'flex';
     } else {
       img.style.display = 'none';
+      removeBtn.style.display = 'none';
     }
+  }
+
+  function removeCover() {
+    document.getElementById('f-cover-url').value = '';
+    document.getElementById('cover-preview').style.display = 'none';
+    document.getElementById('remove-cover-btn').style.display = 'none';
+    document.getElementById('upload-label').textContent = 'Click to upload image';
+    document.getElementById('cover-file').value = '';
   }
 
   // ── Toast ──
