@@ -1,20 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 360" width="520" height="360">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 900" width="520" height="900">
   <text
     x="260"
-    y="158"
-    font-family="'Arial Black', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif"
+    y="360"
+    font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif"
     font-weight="900"
-    font-size="175"
+    font-size="160"
     text-anchor="middle"
     fill="#000000"
-    transform="scale(1,1)"
   >STEVE</text>
   <text
     x="260"
-    y="340"
-    font-family="'Arial Black', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif"
+    y="560"
+    font-family="'Arial Black', 'Helvetica Neue', Arial, sans-serif"
     font-weight="900"
-    font-size="175"
+    font-size="160"
     text-anchor="middle"
     fill="#000000"
   >MADDEN</text>
