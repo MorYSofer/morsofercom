@@ -626,57 +626,6 @@
 
     .blog-card:hover .card-arrow { color: rgba(124,58,237,0.8); }
 
-    /* ── Thoughts ── */
-    #thoughts .thoughts-grid {
-      margin-top: 64px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-
-    .thought-card {
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 6px;
-      padding: 40px;
-      background: #111111;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .thought-card::before {
-      content: '\201C';
-      position: absolute;
-      top: -10px;
-      left: 24px;
-      font-family: 'Playfair Display', serif;
-      font-size: 8rem;
-      font-weight: 900;
-      color: rgba(124,58,237,0.08);
-      line-height: 1;
-      pointer-events: none;
-    }
-
-    .thought-card blockquote {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
-      font-style: italic;
-      font-weight: 400;
-      line-height: 1.6;
-      color: rgba(255,255,255,0.8);
-      position: relative;
-      z-index: 1;
-    }
-
-    .thought-card .thought-tag {
-      margin-top: 24px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 400;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.2);
-    }
-
     /* ── Contact ── */
     #contact {
       text-align: center;
@@ -1006,7 +955,6 @@
       section { padding: 80px 24px; }
       #about .about-grid { grid-template-columns: 1fr; gap: 40px; }
       #blog .blog-grid { grid-template-columns: 1fr; }
-      #thoughts .thoughts-grid { grid-template-columns: 1fr; }
       #contact { padding: 100px 24px; }
       footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
     }
@@ -1031,7 +979,6 @@
     <div class="nav-links">
       <a href="#work">Work</a>
       <a href="#blog">Blog</a>
-      <a href="#thoughts">Thoughts</a>
       <a href="#about">About</a>
       <a href="#book" style="color:#a855f7;">Book</a>
     </div>
@@ -1050,7 +997,6 @@
   <div class="mobile-menu" id="mobile-menu">
     <a href="#work" onclick="closeMenu()">Work</a>
     <a href="#blog" onclick="closeMenu()">Blog</a>
-    <a href="#thoughts" onclick="closeMenu()">Thoughts</a>
     <a href="#about" onclick="closeMenu()">About</a>
     <a href="#book" class="book-link" onclick="closeMenu()">Book a call</a>
   </div>
@@ -1194,38 +1140,6 @@
     <h2 class="section-heading reveal">Notes on<br>marketing & growth.</h2>
     <div class="blog-grid" id="blog-container">
       <!-- Populated by renderPosts() -->
-    </div>
-  </section>
-
-  <div class="section-transition" aria-hidden="true">
-    <div class="st-line"></div>
-    <div class="st-orb" style="--x:5%;  --s:10px;--c:#a5b4fc;--op:.7; --d:3.4s;--dl:0s;   --blur:5px;"></div>
-    <div class="st-orb" style="--x:16%; --s:7px; --c:#3b82f6;--op:.6; --d:4.1s;--dl:.7s;  --blur:4px;"></div>
-    <div class="st-orb" style="--x:29%; --s:13px;--c:#ddd6fe;--op:.55;--d:3.7s;--dl:1.4s; --blur:7px;"></div>
-    <div class="st-orb" style="--x:44%; --s:8px; --c:#7c2bbf;--op:.75;--d:4.3s;--dl:.3s;  --blur:5px;"></div>
-    <div class="st-orb" style="--x:57%; --s:11px;--c:#60a5fa;--op:.6; --d:3.9s;--dl:1.0s; --blur:6px;"></div>
-    <div class="st-orb" style="--x:70%; --s:7px; --c:#a5b4fc;--op:.65;--d:3.5s;--dl:.5s;  --blur:4px;"></div>
-    <div class="st-orb" style="--x:82%; --s:10px;--c:#3b82f6;--op:.6; --d:4.5s;--dl:1.7s; --blur:5px;"></div>
-    <div class="st-orb" style="--x:93%; --s:8px; --c:#ddd6fe;--op:.5; --d:3.6s;--dl:.9s;  --blur:4px;"></div>
-  </div>
-
-  <!-- ══ THOUGHTS ══ -->
-  <section id="thoughts">
-    <p class="section-label reveal">Thoughts</p>
-    <h2 class="section-heading reveal">Things I keep<br>coming back to.</h2>
-    <div class="thoughts-grid">
-      <div class="thought-card reveal">
-        <blockquote>
-          "Most people optimise for looking right. A few optimise for being right. The gap between those two strategies is where interesting things live."
-        </blockquote>
-        <p class="thought-tag">On conviction</p>
-      </div>
-      <div class="thought-card reveal">
-        <blockquote>
-          "Attention is the resource everyone's fighting for and the one thing everyone's reluctant to spend on what actually matters."
-        </blockquote>
-        <p class="thought-tag">On attention</p>
-      </div>
     </div>
   </section>
 
