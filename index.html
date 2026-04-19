@@ -258,6 +258,7 @@
     .hero-content {
       position: relative;
       z-index: 2;
+      max-width: min(52%, 720px);
     }
 
     /* Avatar — hidden on desktop, shown on mobile */
@@ -304,7 +305,7 @@
     .hero-socials {
       position: absolute;
       bottom: 40px;
-      right: 48px;
+      left: 48px;
       display: flex;
       gap: 24px;
       z-index: 2;
@@ -322,6 +323,73 @@
     }
 
     .hero-socials a:hover { color: #ffffff; }
+
+    .hero-desktop-photo {
+      position: absolute;
+      top: 50%;
+      right: 48px;
+      width: min(40vw, 560px);
+      height: min(76vh, 720px);
+      transform: translateY(-50%);
+      border-radius: 32px;
+      overflow: hidden;
+      z-index: 1;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      box-shadow:
+        0 32px 90px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.03);
+    }
+
+    .hero-desktop-photo::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(10,10,10,0.96) 0%, rgba(10,10,10,0.6) 18%, rgba(10,10,10,0.12) 42%, transparent 60%),
+        linear-gradient(180deg, rgba(10,10,10,0.08) 0%, rgba(10,10,10,0.2) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .hero-desktop-photo::after {
+      content: '';
+      position: absolute;
+      inset: 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.45;
+    }
+
+    .hero-desktop-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 40% center;
+      filter: saturate(0.96) contrast(1.04);
+      transform: scale(1.02);
+    }
+
+    .hero-photo-caption {
+      position: absolute;
+      left: 28px;
+      bottom: 28px;
+      z-index: 3;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      background: rgba(6,6,6,0.5);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.72);
+    }
 
 
     /* ── Section base ── */
@@ -934,9 +1002,11 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        max-width: none;
       }
 
       .hero-avatar-wrap { display: flex; }
+      .hero-desktop-photo { display: none; }
 
       .hero-heading {
         font-size: clamp(3.2rem, 15vw, 6rem);
@@ -1006,6 +1076,14 @@
     <!-- Aurora background -->
     <div class="aurora-wrap" aria-hidden="true">
       <div class="aurora-layer"></div>
+    </div>
+
+    <div class="hero-desktop-photo reveal">
+      <img
+        src="brand_assets/image_assets/Mor Sofer at the British Parliament - Edited.jpg"
+        alt="Mor Sofer speaking at the British Parliament"
+      />
+      <p class="hero-photo-caption">British Parliament</p>
     </div>
 
     <!-- Hero content -->
